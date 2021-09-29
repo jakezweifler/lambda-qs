@@ -12,6 +12,7 @@ TParr. Typ ::= "parr" "(" Typ "->" Typ ")";
 TCmd.  Typ ::= "cmd" "(" Typ ")";
 TNat.  Typ ::= "nat";
 TUnit. Typ ::= "unit";
+TQray. Typ ::= Pi (map:nat->qey) . "qarray" (nat -> qey);;
 
 -- Expressions
 EVar.  Exp ::= Var;
@@ -23,6 +24,8 @@ ELet.  Exp ::= "let" Var "be" Exp "in" Exp;
 ELam.  Exp ::= "\\" "(" Var ":" Typ ")" Exp;
 EAp.   Exp ::= Exp "(" Exp ")";
 ECmd.  Exp ::= "cmd" Cmd;
+EArrL. Exp ::= "qray" "(" Exp ";" Exp ")"; let arr = [q1, q2]; // qarr [0 -> k1; 1 -> k2]
+EArrG. Exp ::= "qrayget" "(" Exp ";" Exp ")";
 
 -- Commands
 CRet. Cmd ::= "ret" Exp;
@@ -30,8 +33,6 @@ CBnd. Cmd ::= "bnd" Var "<-" Exp ";" Cmd;
 CDcl. Cmd ::= "dcl" Qey "in" Cmd;
 CGap. Cmd ::= Uni "(" Exp ")";
 CCap. Cmd ::= "Controlled" Uni "(" Exp "," Exp ")";
-CGet. Cmd ::= "get" "[" Qey "]";
-CSet. Cmd ::= "set" "[" Qey "]" "(" Exp ")";
 
 -- Programming idioms
 

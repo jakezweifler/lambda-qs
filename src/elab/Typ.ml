@@ -103,6 +103,8 @@ let rec typeof ctx = function
   | ELet  (x, e1, e2) -> typeof_let  ctx x e1 e2
   | ELam  (x, t, e)   -> typeof_lam  ctx x t e
   | EAp   (e1, e2)    -> typeof_ap   ctx e1 e2
+  | EArrL (e1, e2)    -> typeof_qray ctx e1 e2
+  | EArrG (e1, e2)    -> typeof_qrayget ctx e1 e2
 
 and typeof_plus ctx e1 e2 =
   let t1, t2 = typeof ctx e1, typeof ctx e2 in
@@ -124,6 +126,16 @@ and typeof_ap ctx e1 e2 =
   match typeof ctx e1 with
   | TParr (t1, t2) -> if (typeof ctx e2 = t1)
                       then t2 else failwith type_err
+  | _ -> failwith type_err
+
+and typeof_qray ctx e1 e2 =
+  match (typeof ctx e1, typeof ctx e2) with
+  | TNat, TParr (TNat, _) -> TQray
+  | _ -> failwith type_err
+
+and typeof_qrayget ctx e1 e2 =
+  match (typeof ctx e1, typeof ctx e2) with
+  | TQray, TNat -> TQref
   | _ -> failwith type_err
 
 and typeof_cmd ctx sgn m =
